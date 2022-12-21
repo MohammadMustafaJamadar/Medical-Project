@@ -9,20 +9,20 @@ import {
   Navbar,
   Button,
   Alert
-} from "react-bootstrap";
+} from "react-bootstrap"; //react-bootstrap se chezan lere
 import { Link } from "react-router-dom";
-import inputChanger from "../../utils/general";
+import inputChanger from "../../utils/general"; //utils se input ke value chnge karne ka function lai
 import { useState } from "react";
 import axios from "axios";
 
 export default function SignupForm() {
-  const [name, setName] = useState("");
-  const [emailOrNumber, setEmailOrNumber] = useState("");
-  const [password, createPassword] = useState("");
-  const [submitStatus, chageSubmitStatus] = useState(true);
-  const [validation, setValidation] = useState(null)
-  const [showAlert, setShowAlert] = useState(true)
-  const [alertVariant, setAlertVariant] = useState("danger")
+  const [name, setName] = useState("");                      //input me initial value dere
+  const [emailOrNumber, setEmailOrNumber] = useState("");    //input me initial value dere
+  const [password, createPassword] = useState("");           //input me initial value dere
+  const [submitStatus, chageSubmitStatus] = useState(true);  //submit ka button disable hai usko enable karre
+  const [validation, setValidation] = useState(null)         //validation ko initail value dere 
+  const [showAlert, setShowAlert] = useState(true)           //alert ko value dere 
+  const [alertVariant, setAlertVariant] = useState("danger") //alert ke variant ko value dere
 
   const nameChanger = (event) => {
     event.preventDefault();
@@ -31,15 +31,16 @@ export default function SignupForm() {
 
   const emailOrNumberChanger = (event) => {
     event.preventDefault();
-    inputChanger(event, setEmailOrNumber);
+    inputChanger(event, setEmailOrNumber); //inputs ke value isme jo type kiya jai wo  karre
   };
 
   const passwordChanger = (event) => {
     event.preventDefault();
-    inputChanger(event, createPassword);
+    inputChanger(event, createPassword); //inputs ke value isme jo type kiya jai wo  karre
   };
 
   const submitStatusChhanger = () => {
+    //yaha per submit ke button ko enable aur disable kiya jara
     if (submitStatus === true) {
       chageSubmitStatus(false);
     } else {
@@ -50,7 +51,8 @@ export default function SignupForm() {
 
   const formSubmit = (event) => {
     event.preventDefault();
-    const userRecords = { name, emailOrNumber, password };
+    const userRecords = { name, emailOrNumber, password }; //pura user ka records save karre submit ke onclick per
+    //yaha validation kiya jara
     if(name && emailOrNumber && password){
       if(password.length < 6){
 
@@ -58,9 +60,9 @@ export default function SignupForm() {
         setValidation("Pass min 6")
         setShowAlert(true)
        
-      }else{
+      }else{ //user data backEnd ko bheja jara
         axios.post("http://localhost:9000/signup", userRecords).then((res)=>{
-          console.log(res.data);
+          console.log(res.data); //backend se data lere
           setValidation(res.data.massage)
           setAlertVariant("success")
           setShowAlert(true)

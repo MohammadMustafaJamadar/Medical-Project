@@ -8,29 +8,29 @@ import {
   Nav,
   Navbar,
   Button,
-} from "react-bootstrap";
+} from "react-bootstrap"; //react-bootstrap se chezan lere
 import { Link } from "react-router-dom";
-import inputChanger from "../../utils/general";
+import inputChanger from "../../utils/general"; //utils se input ke value chnge karne ka function lai
 import { useState } from "react";
 import axios from "axios";
 
 export default function LoginForm() {
-  const [emailOrNumber, setEmailOrNumber] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailOrNumber, setEmailOrNumber] = useState(""); //input me initial value dere
+  const [password, setPassword] = useState(""); //input me initial value dere
 
   const emailOrNumberChanger = (event) => {
     event.preventDefault();
-    inputChanger(event, setEmailOrNumber);
+    inputChanger(event, setEmailOrNumber); //inputs ke value isme jo type kiya jai wo  karre
   };
 
   const passwordrChanger = (event) => {
     event.preventDefault();
-    inputChanger(event, setPassword);
+    inputChanger(event, setPassword); //inputs ke value isme jo type kiya jai wo  karre
   };
 
   const formSubmit = (event) => {
     event.preventDefault();
-    const userRecords = { emailOrNumber, password };
+    const userRecords = { emailOrNumber, password }; //pura user ka records save karre submit ke onclick per
     console.log(userRecords);
   };
 

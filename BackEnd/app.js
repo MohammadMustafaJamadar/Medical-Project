@@ -5,8 +5,8 @@ import { registrationFunction } from "./controller/callbackFunctions.js";
 
 const port = 9000;
 
-app.use(cors());
-app.use(express.json());
+app.use(cors()); //cors ka istemal karre ine post req aye tu isko leta
+app.use(express.json()); //javascript ko batare ke jason files ko use kar
 app.use(express.urlencoded({extended:false}));
 
 app.post("/");
