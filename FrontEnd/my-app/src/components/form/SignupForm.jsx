@@ -10,7 +10,7 @@ import {
   Button,
   Alert,
 } from "react-bootstrap"; //react-bootstrap se chezan lere
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import inputChanger from "../../utils/general"; //utils se input ke value chnge karne ka function lai
 import { useState } from "react";
 import axios from "axios";
@@ -23,6 +23,7 @@ export default function SignupForm() {
   const [validation, setValidation] = useState(null); //validation ko initail value dere
   const [showAlert, setShowAlert] = useState(true); //alert ko value dere
   const [alertVariant, setAlertVariant] = useState(""); //alert ke variant ko value dere
+  const navigator = useNavigate();
 
   const nameChanger = (event) => {
     event.preventDefault();
@@ -55,10 +56,16 @@ export default function SignupForm() {
     axios
       .post("http://localhost:9000/signup", userRecords)
       .then((res) => {
-         //backend se data lere
-        setValidation(res.data.massage);
-        setAlertVariant(res.data.variant);
-        setShowAlert(true);
+        //backend se data lere
+        const userDetails = res.data.userDetails; //backend se jo data ara woo
+        setValidation(res.data.massage); //alert ko massage dere
+        setAlertVariant(res.data.variant); //alert ka variant badal re
+        setShowAlert(true); //alert show karre
+
+        if (userDetails === undefined) {
+        } else {
+          navigator("/login");
+        }
       })
       .catch((err) => {
         if (err) throw err;

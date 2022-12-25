@@ -20,7 +20,21 @@ const signUpValidation = async (username, userpassword, userEmailOrNumber) => {
     } else {
       return successFull;
     }
-  } catch (error) {}
+  } catch (error) {
+    if (error) throw error;
+  }
 };
 
-export { signUpValidation };
+const loginValidation = async (userEmailOrNumber, userpassword) => {
+  if (
+    userEmailOrNumber === "" ||
+    (userEmailOrNumber === null && userpassword === "") ||
+    userpassword === null
+  ) {
+    return failed.emptyInputs;
+  } else {
+    return successFull;
+  }
+};
+
+export { signUpValidation, loginValidation };

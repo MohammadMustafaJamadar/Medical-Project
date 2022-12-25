@@ -8,6 +8,7 @@ import {
   Nav,
   Navbar,
   Button,
+  Alert,
 } from "react-bootstrap"; //react-bootstrap se chezan lere
 import { Link } from "react-router-dom";
 import inputChanger from "../../utils/general"; //utils se input ke value chnge karne ka function lai
@@ -17,6 +18,9 @@ import axios from "axios";
 export default function LoginForm() {
   const [emailOrNumber, setEmailOrNumber] = useState(""); //input me initial value dere
   const [password, setPassword] = useState(""); //input me initial value dere
+  const [validation, setValidation] = useState(null); //validation ko initail value dere
+  const [showAlert, setShowAlert] = useState(true); //alert ko value dere
+  const [alertVariant, setAlertVariant] = useState(""); //alert ke variant ko value dere
 
   const emailOrNumberChanger = (event) => {
     event.preventDefault();
@@ -31,7 +35,16 @@ export default function LoginForm() {
   const formSubmit = (event) => {
     event.preventDefault();
     const userRecords = { emailOrNumber, password }; //pura user ka records save karre submit ke onclick per
-    console.log(userRecords);
+    axios
+      .post("http://localhost:9000/login", userRecords)
+      .then((res) => {
+        setValidation(res.data.massage); //alert ko massage dere
+        setAlertVariant(res.data.variant); //alert ka variant badal re
+        setShowAlert(true); //alert show karre
+      })
+      .catch((err) => {
+        if (err) throw err;
+      });
   };
 
   return (
@@ -58,12 +71,23 @@ export default function LoginForm() {
         <Row>
           <Col>
             <Form onSubmit={formSubmit}>
+              {validation && showAlert ? (
+                <Alert
+                  variant={alertVariant}
+                  onClose={() => {
+                    setShowAlert(false);
+                  }}
+                  dismissible
+                >
+                  {validation}
+                </Alert>
+              ) : null}
+
               <Form.Group className="mb-3" controlId="userEmailOrNumber">
                 <FloatingLabel
                   controlId="userEmailOrNumber"
                   label="Mobile Number / Email ID"
                   className="mb-3"
-                
                 >
                   <Form.Control
                     type="text"
