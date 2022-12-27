@@ -1,9 +1,10 @@
 import { signUpValidation, loginValidation } from "../utils/validation.js";
 import { successFull, failed, variant } from "../utils/validationDetails.js";
 import UserData from "../src/model/userSchema.js";
+import Jwt  from "jsonwebtoken";
 
 const registrationFunction = async (req, res) => {
-  try { 
+  try {
     //user se data lere
     const username = req.body.name;
     const userpassword = req.body.password;
@@ -26,12 +27,15 @@ const registrationFunction = async (req, res) => {
       res.send({ massage: failed.passwordFailed, variant: variant.danger });
     } else {
       //user ke email ya number se usko find karre agar hai tu already exsits bolre nhi tu signUp kare
-       UserData.findOne(
+      UserData.findOne(
         { userEmailOrNum: userEmailOrNumber },
         async (err, userDetails) => {
-          if(userDetails){
-            res.send({massage:failed.alreadyExist, variant:variant.success})
-          }else{
+          if (userDetails) {
+            res.send({
+              massage: failed.alreadyExist,
+              variant: variant.success,
+            });
+          } else {
             //yaha per signup hora
             const addNewUser = new UserData({
               userName: username,
@@ -39,7 +43,7 @@ const registrationFunction = async (req, res) => {
               userPassword: userpassword,
             });
             await addNewUser.save();
-      
+
             res.send({
               massage: successFull.login,
               variant: variant.success,
@@ -48,7 +52,6 @@ const registrationFunction = async (req, res) => {
           }
         }
       );
-      
     }
   } catch (error) {
     if (error) throw error;
@@ -65,19 +68,20 @@ const loginFunction = async (req, res) => {
       res.send({ massage: failed.emptyInputs, variant: variant.danger });
     } else {
       //user ko login karare
-      const loginUser = await UserData.find({
+      const loginUser = await UserData.findOne({
         userEmailOrNum: userEmailOrNum,
-        userPassword: userPassword,
       });
 
-      if (loginUser.length === 0) {
-        res.send({ massage: failed.emailOrPassFail, variant: variant.danger });
-      } else {
+      if (userPassword === loginUser.userPassword) {
+        let token = await loginUser.generateTokens()
+        res.status(200).cookie("userData", token , {path : "/"})
         res.send({
           massage: successFull.logined,
           userDetails: loginUser,
           variant: variant.success,
         });
+      } else {
+        res.send({ massage: failed.emailOrPassFail, variant: variant.danger });
       }
     }
   } catch (error) {

@@ -68,7 +68,12 @@ export default function SignupForm() {
         }
       })
       .catch((err) => {
-        if (err) throw err;
+        if (err) {
+          setValidation("Server Error! Try after sometime");
+          setShowAlert(true);
+          setAlertVariant("danger");
+          throw err;
+        }
       });
   };
 

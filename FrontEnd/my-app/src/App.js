@@ -5,8 +5,17 @@ import Homepage from "./components/page/Homepage";
 import SignUp from "./components/page/SignUp";
 import User from "./components/page/User";
 import NavBar from "./components/page/NavBar";
+import axios from 'axios';
+import { useEffect } from "react";
 
 function App() {
+
+  // useEffect(()=>{
+  //   axios.post("").then((res)=>{}).catch((err)=>{
+  //     if(err) throw err;
+  //   })
+  // },[])
+
   return (
     <>
       <Router>

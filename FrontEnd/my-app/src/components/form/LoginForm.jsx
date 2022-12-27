@@ -15,6 +15,8 @@ import inputChanger from "../../utils/general"; //utils se input ke value chnge 
 import { useState } from "react";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 export default function LoginForm() {
   const [emailOrNumber, setEmailOrNumber] = useState(""); //input me initial value dere
   const [password, setPassword] = useState(""); //input me initial value dere
@@ -36,14 +38,21 @@ export default function LoginForm() {
     event.preventDefault();
     const userRecords = { emailOrNumber, password }; //pura user ka records save karre submit ke onclick per
     axios
-      .post("http://localhost:9000/login", userRecords)
+      .post("http://localhost:9000/login", userRecords, {
+        withCredentials: true,
+      })
       .then((res) => {
         setValidation(res.data.massage); //alert ko massage dere
         setAlertVariant(res.data.variant); //alert ka variant badal re
         setShowAlert(true); //alert show karre
       })
       .catch((err) => {
-        if (err) throw err;
+        if (err) {
+          setValidation("Server Error! Try after sometime");
+          setShowAlert(true);
+          setAlertVariant("danger");
+          throw err;
+        }
       });
   };
 
