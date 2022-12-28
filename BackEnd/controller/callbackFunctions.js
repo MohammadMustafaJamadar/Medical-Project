@@ -78,8 +78,8 @@ const loginFunction = async (req, res) => {
       });
 
       if (userPassword === loginUser.userPassword) {
-        let token = await loginUser.generateTokens()
-        res.status(200).cookie("userData", token , {path : "/"})
+        let token = await loginUser.generateTokens() //user ka token create kiya jara
+        res.status(200).cookie("userData", token , {path : "/"}) //yaha per token ko cookie me set karre
         res.send({
           massage: successFull.logined,
           userDetails: loginUser,
@@ -98,13 +98,13 @@ const authenticationUser = async (req,res,next)=>{
 
 try {
 
-  const token = req.cookies.userData
-  const verify_User = Jwt.verify(
+  const token = req.cookies.userData //cookie se token lere
+  const verify_User = Jwt.verify( //yaha per wo token ko jwt ke madad se verify karre
     token,
    `${jwtSecretCode}`
   )
 
-  const userInfo = await UserData.findOne({
+  const userInfo = await UserData.findOne({//verify karne ke baad yaha per user detail lere
     _id : verify_User._id,
     'userTokes:userToken' : token
   })
@@ -113,8 +113,8 @@ try {
     if(!userInfo){
       throw new Error("User nor found!");
     }else{
-      req.token = token,
-      req.userInfo = userInfo
+      req.token = token, //token ko req me dalre karre
+      req.userInfo = userInfo //user ke details ko req me dalre karre
       next();
     }
 

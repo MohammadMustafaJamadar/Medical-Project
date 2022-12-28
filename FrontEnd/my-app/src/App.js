@@ -14,7 +14,7 @@ const cookies = new Cookie();
 const fethcingUserData = async () => {
   try {
     return await axios.post("http://localhost:9000/user", {
-      withCredentials: true,
+      withCredentials: true, //backend se jo cookies save kiye jare unko lere 
     });
   } catch (error) {
     throw error;
@@ -26,13 +26,13 @@ function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState();
 
   useEffect(() => {
-    const token = cookies.get("userData");
+    const token = cookies.get("userData"); //token ko cookie se get karre
     if (token) {
       fethcingUserData()
         .then(async (res) => {
-          const userInfo = await res.data;
-          setUserDetails(userInfo);
-          setIsUserLoggedIn(true);
+          const userInfo = await res.data; //backend se user ka data lere
+          setUserDetails(userInfo); //yaha per user ka data set karre
+          setIsUserLoggedIn(true); //iske saath saath user loggedin set karre ke user login hogaya
         })
         .catch((err) => {
           if (err) throw err;
@@ -42,6 +42,7 @@ function App() {
 
   useEffect(() => {
     if (Object.keys(userDetails).length > 0) {
+      //user ka login status set karre
       setIsUserLoggedIn(true);
     } else {
       setIsUserLoggedIn(false);

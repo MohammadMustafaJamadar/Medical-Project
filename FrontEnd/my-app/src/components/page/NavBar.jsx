@@ -15,7 +15,7 @@ export default function NavBar(props) {
   const logOutUser = (event) => {
     event.preventDefault();
     axios
-      .post("http://localhost:9000/logout")
+      .post("http://localhost:9000/logout") //logout ka kaam hai yaha pura
       .then(() => {
         setUserDetails({});
         navigateUser("/login");
