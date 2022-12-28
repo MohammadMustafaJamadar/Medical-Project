@@ -5,27 +5,74 @@ import Homepage from "./components/page/Homepage";
 import SignUp from "./components/page/SignUp";
 import User from "./components/page/User";
 import NavBar from "./components/page/NavBar";
-import axios from 'axios';
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Cookie from "universal-cookie";
+
+const cookies = new Cookie();
+
+const fethcingUserData = async () => {
+  try {
+    return await axios.post("http://localhost:9000/user", {
+      withCredentials: true,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
 
 function App() {
+  const [userDetails, setUserDetails] = useState({});
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState();
 
-  // useEffect(()=>{
-  //   axios.post("").then((res)=>{}).catch((err)=>{
-  //     if(err) throw err;
-  //   })
-  // },[])
+  useEffect(() => {
+    const token = cookies.get("userData");
+    if (token) {
+      fethcingUserData()
+        .then(async (res) => {
+          const userInfo = await res.data;
+          setUserDetails(userInfo);
+          setIsUserLoggedIn(true);
+        })
+        .catch((err) => {
+          if (err) throw err;
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(userDetails).length > 0) {
+      setIsUserLoggedIn(true);
+    } else {
+      setIsUserLoggedIn(false);
+    }
+  }, [userDetails]);
 
   return (
     <>
       <Router>
-        <NavBar/>
+        <NavBar isUserLoggedIn={isUserLoggedIn} setUserDetails={setUserDetails} />
         <Routes>
           <Route element={<Homepage />} path="/"></Route>
-          <Route element={<SignUp />} path="/signup"></Route>
-          <Route element={<Login />} path="/login"></Route>
+          <Route
+            element={<SignUp isUserLoggedIn={isUserLoggedIn} />}
+            path="/signup"
+          ></Route>
+          <Route
+            element={<Login isUserLoggedIn={isUserLoggedIn} setUserDetails={setUserDetails} />}
+            path="/login"
+          ></Route>
 
-          <Route element={<User />} path="/user"></Route>
+          <Route
+            element={
+              isUserLoggedIn ? (
+                <User userDetails={userDetails} />
+              ) : (
+                <Login isUserLoggedIn={isUserLoggedIn} setUserDetails={setUserDetails} />
+              )
+            }
+            path="/user"
+          ></Route>
         </Routes>
       </Router>
     </>

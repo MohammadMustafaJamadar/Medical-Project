@@ -10,19 +10,22 @@ import {
   Button,
   Alert,
 } from "react-bootstrap"; //react-bootstrap se chezan lere
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import inputChanger from "../../utils/general"; //utils se input ke value chnge karne ka function lai
 import { useState } from "react";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
-export default function LoginForm() {
+export default function LoginForm(props) {
+  const {setUserDetails} = props;
+
   const [emailOrNumber, setEmailOrNumber] = useState(""); //input me initial value dere
   const [password, setPassword] = useState(""); //input me initial value dere
   const [validation, setValidation] = useState(null); //validation ko initail value dere
   const [showAlert, setShowAlert] = useState(true); //alert ko value dere
   const [alertVariant, setAlertVariant] = useState(""); //alert ke variant ko value dere
+  const navigator = useNavigate();
 
   const emailOrNumberChanger = (event) => {
     event.preventDefault();
@@ -42,9 +45,19 @@ export default function LoginForm() {
         withCredentials: true,
       })
       .then((res) => {
-        setValidation(res.data.massage); //alert ko massage dere
-        setAlertVariant(res.data.variant); //alert ka variant badal re
-        setShowAlert(true); //alert show karre
+        console.log(res.data.userDetails);
+        const userDetails = res.data.userDetails;
+        if (userDetails === undefined) {
+          setValidation("User not found!");
+          setAlertVariant("danger");
+        } else {
+          setValidation(res.data.massage); //alert ko massage dere
+          setAlertVariant(res.data.variant); //alert ka variant badal re
+          setShowAlert(true); //alert show karre
+          setUserDetails(userDetails);
+          navigator("/user");
+          
+        }
       })
       .catch((err) => {
         if (err) {

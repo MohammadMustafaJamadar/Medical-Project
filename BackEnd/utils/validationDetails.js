@@ -8,7 +8,8 @@ const failed = {
   emailOrnumberFailed: "Email or Number is not valid",
   passwordFailed: "Password must be strong.",
   emailOrPassFail : "Password Or Email incorrect!",
-  alreadyExist : "User already exist please login!"
+  alreadyExist : "User already exist please login!",
+  userLoginedFail: "User does not exists!"
 };
 
 const variant = {

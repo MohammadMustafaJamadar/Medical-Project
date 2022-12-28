@@ -2,6 +2,11 @@ import { signUpValidation, loginValidation } from "../utils/validation.js";
 import { successFull, failed, variant } from "../utils/validationDetails.js";
 import UserData from "../src/model/userSchema.js";
 import Jwt  from "jsonwebtoken";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const jwtSecretCode = process.env.JWT_SECRET_CODE
 
 const registrationFunction = async (req, res) => {
   try {
@@ -89,4 +94,50 @@ const loginFunction = async (req, res) => {
   }
 };
 
-export { registrationFunction, loginFunction };
+const authenticationUser = async (req,res,next)=>{
+
+try {
+
+  const token = req.cookies.userData
+  const verify_User = Jwt.verify(
+    token,
+   `${jwtSecretCode}`
+  )
+
+  const userInfo = await UserData.findOne({
+    _id : verify_User._id,
+    'userTokes:userToken' : token
+  })
+
+
+    if(!userInfo){
+      throw new Error("User nor found!");
+    }else{
+      req.token = token,
+      req.userInfo = userInfo
+      next();
+    }
+
+  
+  
+} catch (error) {
+  res.status(404).send(failed.userLoginedFail)
+  throw error;
+}
+
+}
+
+const loginedUser = (req,res)=>{
+
+  res.send(req.userInfo);
+
+}
+
+const logOutFunction = (req,res)=>{
+  
+  res.clearCookie("userData", {path:"/"})
+  res.send("Cookie Cleared!")
+
+}
+
+export { registrationFunction, loginFunction, authenticationUser, loginedUser, logOutFunction };

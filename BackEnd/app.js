@@ -2,12 +2,13 @@ import express from "express";
 const app = express();
 import dotenv from "dotenv";
 import Cors from "cors";
-import { registrationFunction, loginFunction } from "./controller/callbackFunctions.js";
+import { registrationFunction, loginFunction, authenticationUser, loginedUser, logOutFunction } from "./controller/callbackFunctions.js";
 import "./src/connection/connection.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
 const port = process.env.PORT;
+
 
 const corsOptions = {
   origin : "http://localhost:3000",
@@ -23,6 +24,8 @@ app.use(express.urlencoded({ extended: false }));
 app.post("/");
 app.post("/signup", registrationFunction);
 app.post("/login", loginFunction);
+app.post("/user",authenticationUser,loginedUser)
+app.post("/logout", logOutFunction)
 
 app.listen(port, () => {
   console.log(`server running on ${port}`);

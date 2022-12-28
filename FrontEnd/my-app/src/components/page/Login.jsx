@@ -1,8 +1,8 @@
 import React from 'react'
 import LoginForm from '../form/LoginForm'
 
-export default function Login() {
+export default function Login(props) {
   return (
-    <LoginForm/>
+    <LoginForm  {...props} />
   )
 }

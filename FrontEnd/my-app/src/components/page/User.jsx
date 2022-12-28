@@ -12,7 +12,10 @@ import {
 } from "mdb-react-ui-kit";
 import "../css/userprofile.css"
 
-export default function User() {
+export default function User(props) {
+const {userDetails} = props;
+const {userName,userEmailOrNum} = userDetails;
+
   return (
     <>
       <section className="vh-100" style={{ backgroundColor: "#f4f5f7" }}>
@@ -36,7 +39,7 @@ export default function User() {
                       style={{ width: "80px" }}
                       fluid
                     />
-                    <MDBTypography tag="h5">Marie Horwitz</MDBTypography>
+                    <MDBTypography tag="h5">{userName}</MDBTypography>
                     <MDBCardText>Web Designer</MDBCardText>
                     <MDBIcon far icon="edit mb-5" />
                   </MDBCol>
@@ -48,13 +51,13 @@ export default function User() {
                         <MDBCol size="6" className="mb-3">
                           <MDBTypography tag="h6">Full Name:</MDBTypography>
                           <MDBCardText className="text-muted">
-                            info@example.com
+                            {userName}
                           </MDBCardText>
                         </MDBCol>
                         <MDBCol size="6" className="mb-3">
                           <MDBTypography tag="h6">Phone</MDBTypography>
                           <MDBCardText className="text-muted">
-                            123 456 789
+                           {userEmailOrNum}
                           </MDBCardText>
                         </MDBCol>
                       </MDBRow>
