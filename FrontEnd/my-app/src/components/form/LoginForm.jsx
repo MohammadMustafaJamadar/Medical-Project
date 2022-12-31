@@ -45,7 +45,7 @@ export default function LoginForm(props) {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res.data.userDetails);
+      
         const userDetails = res.data.userDetails;
         if (userDetails === undefined) {
           setValidation("User not found!");

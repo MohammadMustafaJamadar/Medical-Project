@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const jwtSecretCode = process.env.JWT_SECRET_CODE
+const jwtSecretCode = process.env.JWT_SECRET_CODE;
 
 const { Schema } = Mongoose;
 
@@ -23,6 +23,14 @@ const newUser = new Schema({
         throw Error;
       }
     },
+  },
+  userEmail: {
+    type: String,
+    unique: true,
+  },
+  userNumber: {
+    type: String,
+    unique: true,
   },
   userPassword: {
     type: String,
@@ -43,22 +51,18 @@ const newUser = new Schema({
   ],
 });
 
-newUser.methods.generateTokens = async function (){ //token ko generate kiya jara
+newUser.methods.generateTokens = async function () {
+  //token ko generate kiya jara
   try {
+    let token = jwt.sign({ _id: this._id }, `${jwtSecretCode}`);
 
-    let token = jwt.sign(
-      {_id : this._id},
-      `${jwtSecretCode}`
-    )
-
-    this.userTokes = this.userTokes.concat({userToken : token});
+    this.userTokes = this.userTokes.concat({ userToken: token });
     this.save();
-    return token
-    
+    return token;
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};
 
 const UserData = Mongoose.model("userInfo", newUser);
 

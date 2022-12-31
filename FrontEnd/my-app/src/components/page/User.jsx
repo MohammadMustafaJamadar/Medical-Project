@@ -10,11 +10,12 @@ import {
   MDBTypography,
   MDBIcon,
 } from "mdb-react-ui-kit";
-import "../css/userprofile.css"
+import { Button } from "react-bootstrap";
+import "../css/userprofile.css";
 
 export default function User(props) {
-const {userDetails} = props;
-const {userName,userEmailOrNum} = userDetails;
+  const { userDetails } = props;
+  const { userName, userNumber, userEmail } = userDetails;
 
   return (
     <>
@@ -55,28 +56,39 @@ const {userName,userEmailOrNum} = userDetails;
                           </MDBCardText>
                         </MDBCol>
                         <MDBCol size="6" className="mb-3">
-                          <MDBTypography tag="h6">Phone</MDBTypography>
+                          <MDBTypography tag="h6">Phone:</MDBTypography>
                           <MDBCardText className="text-muted">
-                           {userEmailOrNum}
+                            {userNumber ? (
+                              userNumber
+                            ) : (
+                              <Button variant="primary" type="submit">
+                                Add Number
+                              </Button>
+                            )}
                           </MDBCardText>
                         </MDBCol>
                       </MDBRow>
 
-                      <MDBTypography tag="h6">Information</MDBTypography>
-                      <hr className="mt-0 mb-4" />
+                      <MDBTypography tag="h6"></MDBTypography>
                       <MDBRow className="pt-1">
                         <MDBCol size="6" className="mb-3">
-                          <MDBTypography tag="h6">Email</MDBTypography>
+                          <MDBTypography tag="h6">Email:</MDBTypography>
                           <MDBCardText className="text-muted">
-                            info@example.com
+                            {userEmail ? (
+                              userEmail
+                            ) : (
+                              <Button variant="primary" type="submit">
+                                Add Email
+                              </Button>
+                            )}
                           </MDBCardText>
                         </MDBCol>
-                        <MDBCol size="6" className="mb-3">
+                        {/* <MDBCol size="6" className="mb-3">
                           <MDBTypography tag="h6">Phone</MDBTypography>
                           <MDBCardText className="text-muted">
                             123 456 789
                           </MDBCardText>
-                        </MDBCol>
+                        </MDBCol> */}
                       </MDBRow>
                     </MDBCardBody>
                   </MDBCol>

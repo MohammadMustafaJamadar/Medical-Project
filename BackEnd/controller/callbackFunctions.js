@@ -1,12 +1,13 @@
 import { signUpValidation, loginValidation } from "../utils/validation.js";
 import { successFull, failed, variant } from "../utils/validationDetails.js";
 import UserData from "../src/model/userSchema.js";
-import Jwt  from "jsonwebtoken";
-import dotenv from 'dotenv';
+import Jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import validator from "validator";
 
 dotenv.config();
 
-const jwtSecretCode = process.env.JWT_SECRET_CODE
+const jwtSecretCode = process.env.JWT_SECRET_CODE;
 
 const registrationFunction = async (req, res) => {
   try {
@@ -42,13 +43,32 @@ const registrationFunction = async (req, res) => {
             });
           } else {
             //yaha per signup hora
-            const addNewUser = new UserData({
-              userName: username,
-              userEmailOrNum: userEmailOrNumber,
-              userPassword: userpassword,
-            });
-            await addNewUser.save();
 
+            let addNewUser //user ke details ko db me save karne keleye sir variable define karre
+
+            if (validator.isEmail(userEmailOrNumber)) {
+              //agar user email dala tu email me save karenge
+              addNewUser = new UserData({
+                userName: username,
+                userEmailOrNum: userEmailOrNumber,
+                userPassword: userpassword,
+                userEmail: userEmailOrNumber,
+              });
+              await addNewUser.save();
+            } 
+             else if(validator.isMobilePhone(userEmailOrNumber)) {
+              //agar user number dala tu usko number me save karenge
+              addNewUser = new UserData({
+                userName: username,
+                userEmailOrNum: userEmailOrNumber,
+                userNumber:userEmailOrNumber,
+                userPassword: userpassword,
+              });
+              await addNewUser.save();
+              
+            } 
+
+            //user ka data save karke usko login page pe send karenge
             res.send({
               massage: successFull.login,
               variant: variant.success,
@@ -73,13 +93,24 @@ const loginFunction = async (req, res) => {
       res.send({ massage: failed.emptyInputs, variant: variant.danger });
     } else {
       //user ko login karare
-      const loginUser = await UserData.findOne({
-        userEmailOrNum: userEmailOrNum,
-      });
+      //login karne keleye uski details ka variable define karree
+      let loginUser = {};
+
+      if (validator.isEmail(userEmailOrNum)) {
+        //agar user ko email se login kara re
+        loginUser = await UserData.findOne({
+          userEmail: userEmailOrNum,
+        });
+      } else {
+        loginUser = await UserData.findOne({
+          //userko number se login karra re
+          userNumber: userEmailOrNum,
+        });
+      }
 
       if (userPassword === loginUser.userPassword) {
-        let token = await loginUser.generateTokens() //user ka token create kiya jara
-        res.status(200).cookie("userData", token , {path : "/"}) //yaha per token ko cookie me set karre
+        let token = await loginUser.generateTokens(); //user ka token create kiya jara
+        res.status(200).cookie("userData", token, { path: "/" }); //yaha per token ko cookie me set karre
         res.send({
           massage: successFull.logined,
           userDetails: loginUser,
@@ -94,50 +125,47 @@ const loginFunction = async (req, res) => {
   }
 };
 
-const authenticationUser = async (req,res,next)=>{
+const authenticationUser = async (req, res, next) => {
+  try {
+    const token = req.cookies.userData; //cookie se token lere
+    const verify_User = Jwt.verify(
+      //yaha per wo token ko jwt ke madad se verify karre
+      token,
+      `${jwtSecretCode}`
+    );
 
-try {
+    const userInfo = await UserData.findOne({
+      //verify karne ke baad yaha per user detail lere
+      _id: verify_User._id,
+      "userTokes:userToken": token,
+    });
 
-  const token = req.cookies.userData //cookie se token lere
-  const verify_User = Jwt.verify( //yaha per wo token ko jwt ke madad se verify karre
-    token,
-   `${jwtSecretCode}`
-  )
-
-  const userInfo = await UserData.findOne({//verify karne ke baad yaha per user detail lere
-    _id : verify_User._id,
-    'userTokes:userToken' : token
-  })
-
-
-    if(!userInfo){
+    if (!userInfo) {
       throw new Error("User nor found!");
-    }else{
-      req.token = token, //token ko req me dalre karre
-      req.userInfo = userInfo //user ke details ko req me dalre karre
+    } else {
+      (req.token = token), //token ko req me dalre karre
+        (req.userInfo = userInfo); //user ke details ko req me dalre karre
       next();
     }
+  } catch (error) {
+    res.status(404).send(failed.userLoginedFail);
+    throw error;
+  }
+};
 
-  
-  
-} catch (error) {
-  res.status(404).send(failed.userLoginedFail)
-  throw error;
-}
-
-}
-
-const loginedUser = (req,res)=>{
-
+const loginedUser = (req, res) => {
   res.send(req.userInfo);
+};
 
-}
+const logOutFunction = (req, res) => {
+  res.clearCookie("userData", { path: "/" });
+  res.send("Cookie Cleared!");
+};
 
-const logOutFunction = (req,res)=>{
-  
-  res.clearCookie("userData", {path:"/"})
-  res.send("Cookie Cleared!")
-
-}
-
-export { registrationFunction, loginFunction, authenticationUser, loginedUser, logOutFunction };
+export {
+  registrationFunction,
+  loginFunction,
+  authenticationUser,
+  loginedUser,
+  logOutFunction,
+};
