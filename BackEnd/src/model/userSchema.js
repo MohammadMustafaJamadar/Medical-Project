@@ -41,6 +41,9 @@ const newUser = new Schema({
       }
     },
   },
+  userImage:{
+    type:String,
+  },
   userTokes: [
     {
       userToken: {

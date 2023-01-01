@@ -11,7 +11,7 @@ import {
   Alert,
 } from "react-bootstrap"; //react-bootstrap se chezan lere
 import { Link, useNavigate } from "react-router-dom";
-import inputChanger from "../../utils/general"; //utils se input ke value chnge karne ka function lai
+import {inputChanger} from "../../utils/general"; //utils se input ke value chnge karne ka function lai
 import { useState } from "react";
 import axios from "axios";
 

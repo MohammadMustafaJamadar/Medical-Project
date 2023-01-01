@@ -10,12 +10,33 @@ import {
   MDBTypography,
   MDBIcon,
 } from "mdb-react-ui-kit";
-import { Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import "../css/userprofile.css";
+import { useState } from "react";
+import { imageChanger } from "../../utils/general.js";
+import axios from "axios";
 
 export default function User(props) {
   const { userDetails } = props;
   const { userName, userNumber, userEmail } = userDetails;
+  const [image, setImage] = useState(null);
+
+  const imageUpload = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("photo", image);
+    const config = {
+      headers: {
+        "content-type": "multipart/fotm-data",
+      },
+    };
+    axios.post("http://localhost:9000/image", formData, config);
+  };
+
+  const fileInputChanger = (event) => {
+    imageChanger(event, setImage);
+  };
 
   return (
     <>
@@ -40,6 +61,20 @@ export default function User(props) {
                       style={{ width: "80px" }}
                       fluid
                     />
+                    <Form method="POST" onSubmit={imageUpload}>
+                      <Form.Group controlId="FormImage" className="mb-3">
+                        <Form.Label>Profile Pic</Form.Label>
+                        <Form.Control
+                          type="file"
+                          size="sm"
+                          name="photo"
+                          onChange={fileInputChanger}
+                        />
+                        <Button type="submit" variant="primary">
+                          Upload
+                        </Button>
+                      </Form.Group>
+                    </Form>
                     <MDBTypography tag="h5">{userName}</MDBTypography>
                     <MDBCardText>Web Designer</MDBCardText>
                     <MDBIcon far icon="edit mb-5" />

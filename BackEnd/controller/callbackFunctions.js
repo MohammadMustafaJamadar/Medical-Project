@@ -4,10 +4,41 @@ import UserData from "../src/model/userSchema.js";
 import Jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import validator from "validator";
+import multer from "multer";
 
 dotenv.config();
 
 const jwtSecretCode = process.env.JWT_SECRET_CODE;
+
+const configMulter = multer.diskStorage({
+  destination : (req, file, callBack)=>{
+    callBack(null, "./public")
+  },
+  filename : (req, file, callBack)=>{
+    const ext = file.mimetype.split("/")[1]
+    callBack(null, `image-${Date.now()}.${ext}`)
+  }
+})
+
+const isImage = (req, file, callBack)=>{
+  if(file.mimetype.startsWith("image")){
+    callBack(null, true)
+  }else{
+    callBack(new Error("Only images allowed!"))
+  }
+}
+
+const upload = multer({
+  storage : configMulter,
+  fileFilter: isImage,
+})
+
+const uploadImageSingle = upload.single("photo")
+
+const uploadImage = (req, res)=>{
+  const imageOfUser = req.file
+  console.log(imageOfUser)
+}
 
 const registrationFunction = async (req, res) => {
   try {
@@ -168,4 +199,6 @@ export {
   authenticationUser,
   loginedUser,
   logOutFunction,
+  uploadImageSingle,
+  uploadImage
 };

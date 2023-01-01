@@ -4,4 +4,9 @@ const inputChanger = (event , updatedValue)=>{
 
 }
 
-export default inputChanger;
+const imageChanger = (event, updateImage)=>{
+  const newValue = event.target.files[0]
+  updateImage(newValue)
+}
+
+export  {inputChanger, imageChanger};
