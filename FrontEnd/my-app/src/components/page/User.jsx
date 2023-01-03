@@ -15,6 +15,8 @@ import "../css/userprofile.css";
 import { useState } from "react";
 import { imageChanger } from "../../utils/general.js";
 import axios from "axios";
+import { BsPencil } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 export default function User(props) {
   const { userDetails } = props;
@@ -63,13 +65,15 @@ export default function User(props) {
                     />
                     <Form method="POST" onSubmit={imageUpload}>
                       <Form.Group controlId="FormImage" className="mb-3">
-                        <Form.Label>Profile Pic</Form.Label>
+                        <Form.Label>Select profile pic</Form.Label>
                         <Form.Control
                           type="file"
                           size="sm"
                           name="photo"
                           onChange={fileInputChanger}
-                        />
+                          style={{ display: "none" }}
+                        />{" "}
+                        <br />
                         <Button type="submit" variant="primary">
                           Upload
                         </Button>
@@ -81,7 +85,28 @@ export default function User(props) {
                   </MDBCol>
                   <MDBCol md="8">
                     <MDBCardBody className="p-4">
-                      <MDBTypography tag="h6">Information</MDBTypography>
+                      <MDBRow>
+                        <MDBCol size="4">
+                          <MDBTypography tag="h6">Information </MDBTypography>
+                        </MDBCol>
+                        <MDBCol size="4"></MDBCol>
+                        <MDBCol size="4">
+                          <MDBTypography tag="h6">
+                          <Link
+                              className="nav-link"
+                              aria-current="page"
+                              to="/edituserinfo"
+                            >
+                            Edit profile{" "}
+                          
+                              <BsPencil />
+                            </Link>
+                          </MDBTypography>
+                        </MDBCol>
+                      </MDBRow>
+
+                      {/* BsPencil */}
+
                       <hr className="mt-0 mb-4" />
                       <MDBRow className="pt-1">
                         <MDBCol size="6" className="mb-3">

@@ -8,6 +8,7 @@ import NavBar from "./components/page/NavBar";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookie from "universal-cookie";
+import Edituserinfo from "./components/page/Edituserinfo";
 
 const cookies = new Cookie();
 
@@ -74,6 +75,9 @@ function App() {
             }
             path="/user"
           ></Route>
+          <Route element={
+            <Edituserinfo/>
+          } path="/edituserinfo"></Route>
         </Routes>
       </Router>
     </>

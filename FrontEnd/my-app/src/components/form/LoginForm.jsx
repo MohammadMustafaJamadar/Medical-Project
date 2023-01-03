@@ -130,6 +130,7 @@ export default function LoginForm(props) {
                     placeholder="Password"
                     value={password}
                     onChange={passwordrChanger}
+                    
                   />
                 </FloatingLabel>
               </Form.Group>
